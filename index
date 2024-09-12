@@ -1,110 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dibujo processing</title>
+<cabeza>
+    <meta conjunto de caracteres="UTF-8">
+    <meta name="viewport" content="ancho=ancho-del-dispositivo, escala-inicial=1.0">
+    <title>Procesamiento de dibujos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.js"></script>
-    <link
-  rel="stylesheet"
+    <enlace
+  rel="hoja de estilo"
   href="https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic"
 >
-<style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: blanchedalmond;
+<estilo>
+        html, cuerpo {
+            altura: 100%;
+            margen: 0;
+            pantalla:flexible;
+            alinear-elementos: centro;
+            justificar-contenido: centro;
+            color de fondo: almendra blanqueada ;
         }
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            
+        principal {
+            pantalla:flexible;
+            justificar-contenido: centro;
+            alinear-elementos: centro;
+
         }
 
-</style>
-</head>
-<body>
-    <container>
-        <h1>Dibujo processing</h1>
-        <main>
-            <canvas></canvas>
-        </main>
-        </container>
-    
+</estilo >
+</cabeza>
+<cuerpo>
+    <contenedor>
+        <h1>Procesamiento de dibujos</h1>
+        <principal>
+            <lienzo></lienzo>
+        </principal>
+        </contenedor>
+
 <script src="sketch.js"></script>
-</body>
+</cuerpo>
 </html>
-    <container>
-        <h1>Dibujo processing</h1>
-        <main>
-            <canvas id="myCanvas"></canvas>
-        </main>
-    </container>
-    <script>
+    <contenedor>
+        <h1>Procesamiento de dibujos</h1>
+        <principal>
+            <canvas id="miCanvas"></canvas>
+        </principal>
+    </contenedor>
+    <guión>
         // Lista de pelotas
-        let balls = [5];
+        deje bolas = [ 5 ];
         // Número de pelotas a crear
-        const numBalls = 5;
+        const numBolas = 5;
         // Colores para las pelotas
-        const colors = [
-            'red',    // Rojo
-            'green',  // Verde
-            'blue',   // Azul
-            'yellow', // Amarillo
-            'orange'  // Naranja
+        const colores = [
+            'rojo', // Rojo
+            'verde', // Verde
+            'azul', // Azul
+            'amarillo', // Amarillo
+            'naranja' // Naranja
         ];
-
-        function setup() {
+        función configuración() {
             // Crear el lienzo y asociarlo al elemento canvas
-            createCanvas(800, 600).parent('myCanvas');
+            createCanvas(800, 600).parent('miCanvas');
             // Crear pelotas en posiciones fijas
-            balls.push({
-                x: 100, y: 100, radius: 20, color: colors[0], speedX: 1, speedY: 1
+            bolas.push({
+                x: 100, y: 100, radio: 20, color: colors[0], velocidadX: 1, velocidadY: 1
             });
-            balls.push({
-                x: 300, y: 100, radius: 20, color: colors[1], speedX: 1, speedY: 1
+            bolas.push({
+                x: 300, y: 100, radio: 20, color: colors[1], velocidadX: 1, velocidadY: 1
             });
-            balls.push({
-                x: 500, y: 100, radius: 20, color: colors[2], speedX: 1, speedY: 1
+            bolas.push({
+                x: 500, y: 100, radio: 20, color: colors[2], velocidadX: 1, velocidadY: 1
             });
-            balls.push({
-                x: 200, y: 300, radius: 20, color: colors[3], speedX: 1, speedY: 1
+            bolas.push({
+                x: 200, y: 300, radio: 20, color: colors[3], velocidadX: 1, velocidadY: 1
             });
-            balls.push({
-                x: 400, y: 300, radius: 20, color: colors[4], speedX: 1, speedY: 1
+            bolas.push({
+                x: 400, y: 300, radio: 20, color: colors[4], velocidadX: 1, velocidadY: 1
             });
         }
-
-        function draw() {
+        función dibujar() {
             // Limpiar el lienzo con un color de fondo negro
-            background(0);
-
+            fondo(0);
             // Dibujar y mover cada pelota
-            for (let ball of balls) {
-                fill(ball.color);  // Establecer el color de la pelota
-                noStroke();  // Sin borde para las pelotas
-                ellipse(ball.x, ball.y, ball.radius * 2);  // Dibujar la pelota
+            para (dejar bola de bolas) {
+                llenar(bola.color); // Establecer el color de la pelota
+                sin trazo(); // Sin borde para las pelotas
+                elipse(bola.x, bola.y, bola.radio * 2); // Dibujar la pelota
                 
                 // Actualizar la posición de la pelota
-                ball.x += ball.speedX;
-                ball.y += ball.speedY;
-
+                bola.x += bola.velocidadX;
+                bola.y += bola.velocidadY;
                 // Rebote en los bordes del lienzo
-                if (ball.x - ball.radius < 0 || ball.x + ball.radius > width) {
-                    ball.speedX *= -1;  // Rebotar en el borde horizontal
+                si (bola.x - bola.radio < 0 || bola.x + bola.radio > ancho) {
+                    bola.velocidadX *= -1; // Rebotar en el borde horizontal
                 }
-                if (ball.y - ball.radius < 0 || ball.y + ball.radius > height) {
-                    ball.speedY *= -1;  // Rebotar en el borde vertical
+                si (bola.y - bola.radio < 0 || bola.y + bola.radio > altura) {
+                    bola.velocidadY *= -1; // Rebotar en el borde vertical
                 }
             }
         }
     </script>
-</body>
+</cuerpo>
 </html>
-
-
-
