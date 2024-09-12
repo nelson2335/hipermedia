@@ -38,72 +38,87 @@
 <script src="sketch.js"></script>
 </body>
 </html>
-    <script>
-        // Array to hold the balls
-        let balls = [];
-        let titles = [];
+import pygame
+import random
 
-        function setup() {
-            let canvas = createCanvas(800, 600);
-            canvas.parent('canvas-container');
-            background(200);
+# Inicializamos Pygame
+pygame.init()
 
-            // Fetch data from WordPress API
-            $.getJSON('https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic', function(data) {
-                console.log(data);
+# Definimos el tamaño de la ventana
+window_width = 800
+window_height = 600
+window = pygame.display.set_mode((window_width, window_height))
 
-                // Extract titles from the data
-                titles = data.posts.map(post => post.title);
+# Establecemos el título de la ventana
+pygame.display.set_caption("Pelotas Móviles")
 
-                // Create balls based on the number of titles
-                for (let i = 0; i < titles.length; i++) {
-                    balls.push(new Ball(random(width), random(height), random(10, 30)));
-                }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("Failed to fetch data: ", textStatus, errorThrown);
-            });
-        }
+# Definimos los colores de las pelotas (R, G, B)
+colors = [
+    (255, 0, 0),  # Rojo
+    (0, 255, 0),  # Verde
+    (0, 0, 255),  # Azul
+    (255, 255, 0),  # Amarillo
+    (255, 165, 0)  # Naranja
+]
 
-        function draw() {
-            background(200);
+# Definimos la clase Pelota
+class Pelota:
+    def __init__(self, x, y, radio, color, vel_x, vel_y):
+        self.x = x
+        self.y = y
+        self.radio = radio
+        self.color = color
+        self.vel_x = vel_x
+        self.vel_y = vel_y
 
-            // Update and display each ball
-            for (let i = 0; i < balls.length; i++) {
-                balls[i].update();
-                balls[i].display();
-            }
-        }
+    # Método para dibujar la pelota en la ventana
+    def draw(self, window):
+        pygame.draw.circle(window, self.color, (self.x, self.y), self.radio)
 
-        // Ball class
-        class Ball {
-            constructor(x, y, r) {
-                this.x = x;
-                this.y = y;
-                this.r = r;
-                this.xSpeed = random(-5, 5);
-                this.ySpeed = random(-5, 5);
-                this.color = color(random(255), random(255), random(255));
-            }
+    # Método para mover la pelota y hacer que rebote en los bordes
+    def move(self):
+        self.x += self.vel_x
+        self.y += self.vel_y
 
-            update() {
-                this.x += this.xSpeed;
-                this.y += this.ySpeed;
+        # Rebote en los bordes de la ventana
+        if self.x - self.radio < 0 or self.x + self.radio > window_width:
+            self.vel_x = -self.vel_x
+        if self.y - self.radio < 0 or self.y + self.radio > window_height:
+            self.vel_y = -self.vel_y
 
-                // Bounce off edges
-                if (this.x > width - this.r || this.x < this.r) {
-                    this.xSpeed *= -1;
-                }
-                if (this.y > height - this.r || this.y < this.r) {
-                    this.ySpeed *= -1;
-                }
-            }
+# Creamos una lista de pelotas
+pelotas = []
+for i in range(5):
+    # Posiciones iniciales y velocidades aleatorias
+    x = random.randint(50, window_width - 50)
+    y = random.randint(50, window_height - 50)
+    vel_x = random.randint(-5, 5)
+    vel_y = random.randint(-5, 5)
+    radio = 20
+    color = colors[i]
 
-            display() {
-                fill(this.color);
-                noStroke();
-                ellipse(this.x, this.y, this.r * 2);
-            }
-        }
-    </script>
-</body>
-</html>
+    pelota = Pelota(x, y, radio, color, vel_x, vel_y)
+    pelotas.append(pelota)
+
+# Variable de control para el bucle principal
+running = True
+
+# Bucle principal
+while running:
+    pygame.time.delay(30)  # Pequeño retraso para controlar la velocidad de movimiento
+
+    # Comprobamos eventos
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Movemos y dibujamos cada pelota
+    window.fill((0, 0, 0))  # Limpiamos la ventana con un color negro
+    for pelota in pelotas:
+        pelota.move()
+        pelota.draw(window)
+
+    pygame.display.update()  # Actualizamos la pantalla
+
+# Salimos de Pygame
+pygame.quit()
