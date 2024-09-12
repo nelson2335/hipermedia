@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujo</title>
+    <script src="https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic"></script>
+    <link
+  rel="stylesheet"
+  href="https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic"
+>
+<style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(92, 73, 44);
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+
+</style>
+</head>
+<body>
+    <container>
+        <h1>De wordpress a dibujo processing</h1>
+        <main>
+            <canvas></canvas>
+        </main>
+        </container>
+    
+<script src="sketch.js"></script>
+</body>
+</html>
+    <script>
+        // Array to hold the balls
+        let balls = [];
+        let titles = [];
+
+        function setup() {
+            let canvas = createCanvas(800, 600);
+            canvas.parent('canvas-container');
+            background(200);
+
+            // Fetch data from WordPress API
+            $.getJSON('https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic', function(data) {
+                console.log(data);
+
+                // Extract titles from the data
+                titles = data.posts.map(post => post.title);
+
+                // Create balls based on the number of titles
+                for (let i = 0; i < titles.length; i++) {
+                    balls.push(new Ball(random(width), random(height), random(10, 30)));
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Failed to fetch data: ", textStatus, errorThrown);
+            });
+        }
+
+        function draw() {
+            background(200);
+
+            // Update and display each ball
+            for (let i = 0; i < balls.length; i++) {
+                balls[i].update();
+                balls[i].display();
+            }
+        }
+
+        // Ball class
+        class Ball {
+            constructor(x, y, r) {
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.xSpeed = random(-5, 5);
+                this.ySpeed = random(-5, 5);
+                this.color = color(random(255), random(255), random(255));
+            }
+
+            update() {
+                this.x += this.xSpeed;
+                this.y += this.ySpeed;
+
+                // Bounce off edges
+                if (this.x > width - this.r || this.x < this.r) {
+                    this.xSpeed *= -1;
+                }
+                if (this.y > height - this.r || this.y < this.r) {
+                    this.ySpeed *= -1;
+                }
+            }
+
+            display() {
+                fill(this.color);
+                noStroke();
+                ellipse(this.x, this.y, this.r * 2);
+            }
+        }
+    </script>
+</body>
+</html>
