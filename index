@@ -4,12 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dibujo</title>
-    <script src="https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic"></script>
-    <link
-  rel="stylesheet"
-  href="https://public-api.wordpress.com/rest/v1.1/sites/micolecciondecomic.wordpress.com/posts?tag=comic"
->
-<style>
+    <style>
         html, body {
             height: 100%;
             margin: 0;
@@ -22,103 +17,76 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            
         }
-
-</style>
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
 </head>
 <body>
     <container>
         <h1>De wordpress a dibujo processing</h1>
         <main>
-            <canvas></canvas>
+            <canvas id="myCanvas"></canvas>
         </main>
-        </container>
-    
-<script src="sketch.js"></script>
+    </container>
+    <script>
+        // Lista de pelotas
+        let balls = [];
+        // Número de pelotas a crear
+        const numBalls = 5;
+        // Colores para las pelotas
+        const colors = [
+            'red',    // Rojo
+            'green',  // Verde
+            'blue',   // Azul
+            'yellow', // Amarillo
+            'orange'  // Naranja
+        ];
+
+        function setup() {
+            // Crear el lienzo y asociarlo al elemento canvas
+            createCanvas(800, 600).parent('myCanvas');
+            // Crear pelotas en posiciones fijas
+            balls.push({
+                x: 100, y: 100, radius: 20, color: colors[0], speedX: 1, speedY: 1
+            });
+            balls.push({
+                x: 300, y: 100, radius: 20, color: colors[1], speedX: 1, speedY: 1
+            });
+            balls.push({
+                x: 500, y: 100, radius: 20, color: colors[2], speedX: 1, speedY: 1
+            });
+            balls.push({
+                x: 200, y: 300, radius: 20, color: colors[3], speedX: 1, speedY: 1
+            });
+            balls.push({
+                x: 400, y: 300, radius: 20, color: colors[4], speedX: 1, speedY: 1
+            });
+        }
+
+        function draw() {
+            // Limpiar el lienzo con un color de fondo negro
+            background(0);
+
+            // Dibujar y mover cada pelota
+            for (let ball of balls) {
+                fill(ball.color);  // Establecer el color de la pelota
+                noStroke();  // Sin borde para las pelotas
+                ellipse(ball.x, ball.y, ball.radius * 2);  // Dibujar la pelota
+                
+                // Actualizar la posición de la pelota
+                ball.x += ball.speedX;
+                ball.y += ball.speedY;
+
+                // Rebote en los bordes del lienzo
+                if (ball.x - ball.radius < 0 || ball.x + ball.radius > width) {
+                    ball.speedX *= -1;  // Rebotar en el borde horizontal
+                }
+                if (ball.y - ball.radius < 0 || ball.y + ball.radius > height) {
+                    ball.speedY *= -1;  // Rebotar en el borde vertical
+                }
+            }
+        }
+    </script>
 </body>
 </html>
-import pygame
-import random
 
-# Inicializamos Pygame
-pygame.init()
-
-# Definimos el tamaño de la ventana
-window_width = 800
-window_height = 600
-window = pygame.display.set_mode((window_width, window_height))
-
-# Establecemos el título de la ventana
-pygame.display.set_caption("Pelotas Móviles")
-
-# Definimos los colores de las pelotas (R, G, B)
-colors = [
-    (255, 0, 0),  # Rojo
-    (0, 255, 0),  # Verde
-    (0, 0, 255),  # Azul
-    (255, 255, 0),  # Amarillo
-    (255, 165, 0)  # Naranja
-]
-
-# Definimos la clase Pelota
-class Pelota:
-    def __init__(self, x, y, radio, color, vel_x, vel_y):
-        self.x = x
-        self.y = y
-        self.radio = radio
-        self.color = color
-        self.vel_x = vel_x
-        self.vel_y = vel_y
-
-    # Método para dibujar la pelota en la ventana
-    def draw(self, window):
-        pygame.draw.circle(window, self.color, (self.x, self.y), self.radio)
-
-    # Método para mover la pelota y hacer que rebote en los bordes
-    def move(self):
-        self.x += self.vel_x
-        self.y += self.vel_y
-
-        # Rebote en los bordes de la ventana
-        if self.x - self.radio < 0 or self.x + self.radio > window_width:
-            self.vel_x = -self.vel_x
-        if self.y - self.radio < 0 or self.y + self.radio > window_height:
-            self.vel_y = -self.vel_y
-
-# Creamos una lista de pelotas
-pelotas = []
-for i in range(5):
-    # Posiciones iniciales y velocidades aleatorias
-    x = random.randint(50, window_width - 50)
-    y = random.randint(50, window_height - 50)
-    vel_x = random.randint(-5, 5)
-    vel_y = random.randint(-5, 5)
-    radio = 20
-    color = colors[i]
-
-    pelota = Pelota(x, y, radio, color, vel_x, vel_y)
-    pelotas.append(pelota)
-
-# Variable de control para el bucle principal
-running = True
-
-# Bucle principal
-while running:
-    pygame.time.delay(30)  # Pequeño retraso para controlar la velocidad de movimiento
-
-    # Comprobamos eventos
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Movemos y dibujamos cada pelota
-    window.fill((0, 0, 0))  # Limpiamos la ventana con un color negro
-    for pelota in pelotas:
-        pelota.move()
-        pelota.draw(window)
-
-    pygame.display.update()  # Actualizamos la pantalla
-
-# Salimos de Pygame
-pygame.quit()
